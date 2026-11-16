@@ -14,17 +14,12 @@ import {
   ArrowUpRight,
   Save,
 } from "lucide-vue-next";
-import { WorldViewport, summarize } from "../features/world";
+import WorldViewport from "../features/world/ui/WorldViewport.vue";
+import { summarize } from "../features/world";
 import { InventoryPanel, Hotbar } from "../features/inventory";
 import { SelectionPanel } from "../features/selection";
 import { PlayerPanel, attachPlayer } from "../features/player";
-import {
-  ArchivePanel,
-  save,
-  load,
-  exportWorld,
-  importWorld,
-} from "../features/archive";
+import { ArchivePanel, save } from "../features/archive";
 import { createWorkspace, commandRouter } from "./workspace";
 const state = createWorkspace();
 const cmd = commandRouter(state);
@@ -58,7 +53,9 @@ function fullscreen() {
       <div class="divider"></div>
       <span class="project-name"
         >{{ state.doc.name }} <ChevronDown :size="14" /></span
-      ><span class="local-badge">本地世界</span>
+      ><span class="local-badge">{{
+        state.dirty ? "有未保存更改" : "本地世界"
+      }}</span>
       <div class="top-spacer"></div>
       <span class="version">创造，从一块开始。</span
       ><button class="icon-btn" title="操作帮助" @click="help = !help">
@@ -173,10 +170,6 @@ function fullscreen() {
           @start="cmd.tool('select')"
         /><PlayerPanel :state="state" @toggle="cmd.toggle()" /><ArchivePanel
           :state="state"
-          @save="save(state)"
-          @load="load(state)"
-          @export="exportWorld(state)"
-          @import="importWorld(state, $event)"
         />
       </aside>
     </main>

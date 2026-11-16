@@ -4,8 +4,9 @@ import type { SceneHit } from "../shared/commands";
 import { createWorld, editCells } from "../features/world";
 import { pickCorner, regionCells, clearRegion } from "../features/selection";
 import { chooseMaterial, selectSlot } from "../features/inventory";
+import { initArchive } from "../features/archive";
 export function createWorkspace() {
-  return reactive<Workspace>({
+  const s = reactive<Workspace>({
     doc: createWorld(),
     material: "grass",
     tool: "place",
@@ -15,7 +16,14 @@ export function createWorkspace() {
     dirty: false,
     mode: "build",
     savedAt: null,
+    slotId: "",
+    savedRevision: 0,
+    loadEpoch: 0,
+    pendingLoad: null,
   });
+  // 挂载本地 vault：多槽位、历史版本与旧单槽迁移都在这里完成
+  initArchive(s);
+  return s;
 }
 export function commandRouter(s: Workspace) {
   return {

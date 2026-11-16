@@ -21,6 +21,18 @@ export interface Region {
   b: Vec3;
 }
 export type Tool = "place" | "remove" | "select";
+export interface PendingSession {
+  slotId: string;
+  title: string;
+  doc: WorldDocument;
+  material: MaterialId;
+  tool: Tool;
+  region: Region | null;
+  anchor: Vec3 | null;
+  mode: "build" | "walk";
+  savedRevision: number;
+  savedAt: string | null;
+}
 export interface Workspace {
   doc: WorldDocument;
   material: MaterialId;
@@ -31,6 +43,10 @@ export interface Workspace {
   dirty: boolean;
   mode: "build" | "walk";
   savedAt: string | null;
+  slotId: string;
+  savedRevision: number;
+  loadEpoch: number;
+  pendingLoad: PendingSession | null;
 }
 export const key = (p: Vec3) => `${p.x},${p.y},${p.z}`;
 export const inside = (p: Vec3) =>
